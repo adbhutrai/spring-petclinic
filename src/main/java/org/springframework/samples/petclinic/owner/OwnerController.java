@@ -41,79 +41,81 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 class OwnerController {
 
-    private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
+	private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
 
-    private OwnerService ownerService;
+	private OwnerService ownerService;
 
-    private final OwnerRepository owners;
+	private final OwnerRepository owners;
 
-    @Autowired
-    public OwnerController(OwnerService ownerService, OwnerRepository clinicService) {
-        this.ownerService = ownerService;
-        this.owners = clinicService;
-    }
+	@Autowired
+	public OwnerController(OwnerService ownerService, OwnerRepository clinicService) {
+		this.ownerService = ownerService;
+		this.owners = clinicService;
+	}
 
-    @InitBinder
-    public void setAllowedFields(WebDataBinder dataBinder) {
-        dataBinder.setDisallowedFields("id");
-    }
+	@InitBinder
+	public void setAllowedFields(WebDataBinder dataBinder) {
+		dataBinder.setDisallowedFields("id");
+	}
 
-    @GetMapping("/owners/new")
-    public String initCreationForm(Map<String, Object> model) {
-        Owner owner = new Owner();
-        model.put("owner", owner);
-        return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-    }
+	@GetMapping("/owners/new")
+	public String initCreationForm(Map<String, Object> model) {
+		Owner owner = new Owner();
+		model.put("owner", owner);
+		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+	}
 
-    @PostMapping("/owners/new")
-    public String processCreationForm(@Valid Owner owner, BindingResult result) {
-        OwnerUIAdptor port = new OwnerUIAdptor(result, null);
-        ownerService.createOwner(owner, result, port);
-        return port.getViewName();
-    }
+	@PostMapping("/owners/new")
+	public String processCreationForm(@Valid Owner owner, BindingResult result) {
+		OwnerUIAdptor port = new OwnerUIAdptor(result, null);
+		ownerService.createOwner(owner, result, port);
+		return port.getViewName();
+	}
 
-    @GetMapping("/owners/find")
-    public String initFindForm(Map<String, Object> model) {
-        model.put("owner", new Owner());
-        return "owners/findOwners";
-    }
+	@GetMapping("/owners/find")
+	public String initFindForm(Map<String, Object> model) {
+		model.put("owner", new Owner());
+		return "owners/findOwners";
+	}
 
-    @GetMapping("/owners")
-    public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) {
-        OwnerUIAdptor port = new OwnerUIAdptor(result, model);
-        ownerService.findOwners(owner, port);
-        return port.getViewName();
-    }
+	@GetMapping("/owners")
+	public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) {
+		OwnerUIAdptor port = new OwnerUIAdptor(result, model);
+		ownerService.findOwners(owner, port);
+		return port.getViewName();
+	}
 
-    @GetMapping("/owners/{ownerId}/edit")
-    public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
-        Owner owner = this.owners.findById(ownerId);
-        model.addAttribute(owner);
-        return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-    }
+	@GetMapping("/owners/{ownerId}/edit")
+	public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
+		Owner owner = this.owners.findById(ownerId);
+		model.addAttribute(owner);
+		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+	}
 
-    @PostMapping("/owners/{ownerId}/edit")
-    public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result, @PathVariable("ownerId") int ownerId) {
-        if (result.hasErrors()) {
-            return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-        } else {
-            owner.setId(ownerId);
-            this.owners.save(owner);
-            return "redirect:/owners/{ownerId}";
-        }
-    }
+	@PostMapping("/owners/{ownerId}/edit")
+	public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result,
+			@PathVariable("ownerId") int ownerId) {
+		if (result.hasErrors()) {
+			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+		} else {
+			owner.setId(ownerId);
+			this.owners.save(owner);
+			return "redirect:/owners/{ownerId}";
+		}
+	}
 
-    /**
-     * Custom handler for displaying an owner.
-     *
-     * @param ownerId the ID of the owner to display
-     * @return a ModelMap with the model attributes for the view
-     */
-    @GetMapping("/owners/{ownerId}")
-    public ModelAndView showOwner(@PathVariable("ownerId") int ownerId) {
-        ModelAndView mav = new ModelAndView("owners/ownerDetails");
-        mav.addObject(this.owners.findById(ownerId));
-        return mav;
-    }
+	/**
+	 * Custom handler for displaying an owner.
+	 *
+	 * @param ownerId
+	 *            the ID of the owner to display
+	 * @return a ModelMap with the model attributes for the view
+	 */
+	@GetMapping("/owners/{ownerId}")
+	public ModelAndView showOwner(@PathVariable("ownerId") int ownerId) {
+		ModelAndView mav = new ModelAndView("owners/ownerDetails");
+		mav.addObject(this.owners.findById(ownerId));
+		return mav;
+	}
 
 }
