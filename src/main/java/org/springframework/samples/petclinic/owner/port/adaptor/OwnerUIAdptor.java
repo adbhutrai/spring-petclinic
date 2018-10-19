@@ -14,6 +14,8 @@ public class OwnerUIAdptor implements OwnerPort {
 
 	private BindingResult result;
 
+	private Map<String, Object> model;
+
 	public Map<String, Object> getModel() {
 		return model;
 	}
@@ -21,8 +23,6 @@ public class OwnerUIAdptor implements OwnerPort {
 	public void setModel(Map<String, Object> model) {
 		this.model = model;
 	}
-
-	private Map<String, Object> model;
 
 	public OwnerUIAdptor(BindingResult result, Map<String, Object> model) {
 		super();
