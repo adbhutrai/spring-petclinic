@@ -35,7 +35,7 @@ import org.springframework.validation.BindingResult;
  */
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes=OwnerServiceImpl.class)
 public class OwnerServiceImplTest {
     private static final int TEST_OWNER_ID = 1;
     @Autowired

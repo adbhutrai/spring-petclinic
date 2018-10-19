@@ -4,6 +4,10 @@ import org.springframework.samples.petclinic.owner.Owner;
 import org.springframework.samples.petclinic.owner.port.OwnerPort;
 import org.springframework.validation.BindingResult;
 
+/**
+ * @author adbhutrai
+ *
+ */
 public interface OwnerService {
 
     public void createOwner(Owner owner, BindingResult result, OwnerPort uiPort);
