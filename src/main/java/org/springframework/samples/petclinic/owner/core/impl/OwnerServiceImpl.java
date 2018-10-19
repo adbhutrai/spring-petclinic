@@ -13,36 +13,35 @@ import org.springframework.validation.BindingResult;
 @Component
 public class OwnerServiceImpl implements OwnerService {
 
-    @Autowired
-    private OwnerRepository ownerRepository;
+	@Autowired
+	private OwnerRepository ownerRepository;
 
-    @Override
-    public void createOwner(Owner owner, BindingResult result, OwnerPort uiPort) {
-        if (result.hasErrors()) {
-            uiPort.createViewOrUpdateResponse();
-        } else {
-            this.ownerRepository.save(owner);
-            uiPort.createSuccessResponse(owner.getId()
-                .toString());
-        }
-    }
+	@Override
+	public void createOwner(Owner owner, BindingResult result, OwnerPort uiPort) {
+		if (result.hasErrors()) {
+			uiPort.createViewOrUpdateResponse();
+		} else {
+			this.ownerRepository.save(owner);
+			uiPort.createSuccessResponse(owner.getId().toString());
+		}
+	}
 
-    @Override
-    public void findOwners(Owner owner, OwnerPort uiPort) {
-        // allow parameterless GET request for /owners to return all records
-        if (owner.getLastName() == null) {
-            owner.setLastName(""); // empty string signifies broadest possible search
-        }
+	@Override
+	public void findOwners(Owner owner, OwnerPort uiPort) {
+		// allow parameterless GET request for /owners to return all records
+		if (owner.getLastName() == null) {
+			owner.setLastName(""); // empty string signifies broadest possible search
+		}
 
-        // find owners by last name
-        Collection<Owner> results = this.ownerRepository.findByLastName(owner.getLastName());
-        if (results.isEmpty()) {
-            // no owners found
-           uiPort.createNoOwnersFound();
-        } else {
-            // multiple owners found
-            uiPort.matchingOwners(results);
-        }
-    }
+		// find owners by last name
+		Collection<Owner> results = this.ownerRepository.findByLastName(owner.getLastName());
+		if (results.isEmpty()) {
+			// no owners found
+			uiPort.createNoOwnersFound();
+		} else {
+			// multiple owners found
+			uiPort.matchingOwners(results);
+		}
+	}
 
 }

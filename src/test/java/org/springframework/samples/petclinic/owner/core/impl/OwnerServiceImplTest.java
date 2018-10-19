@@ -35,96 +35,100 @@ import org.springframework.validation.BindingResult;
  */
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes=OwnerServiceImpl.class)
+@SpringBootTest(classes = OwnerServiceImpl.class)
 public class OwnerServiceImplTest {
-    private static final int TEST_OWNER_ID = 1;
-    @Autowired
-    private OwnerService ownerService;
+	private static final int TEST_OWNER_ID = 1;
+	@Autowired
+	private OwnerService ownerService;
 
-    @MockBean
-    private OwnerRepository owners;
+	@MockBean
+	private OwnerRepository owners;
 
-    private Owner george;
+	private Owner george;
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-        george = new Owner();
-        george.setId(TEST_OWNER_ID);
-        george.setFirstName("George");
-        george.setLastName("Franklin");
-        george.setAddress("110 W. Liberty St.");
-        george.setCity("Madison");
-        george.setTelephone("6085551023");
-        given(this.owners.findById(TEST_OWNER_ID)).willReturn(george);
-    }
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		george = new Owner();
+		george.setId(TEST_OWNER_ID);
+		george.setFirstName("George");
+		george.setLastName("Franklin");
+		george.setAddress("110 W. Liberty St.");
+		george.setCity("Madison");
+		george.setTelephone("6085551023");
+		given(this.owners.findById(TEST_OWNER_ID)).willReturn(george);
+	}
 
-    /**
-     * Test method for {@link org.springframework.samples.petclinic.owner.core.impl.OwnerServiceImpl#createOwner(org.springframework.samples.petclinic.owner.Owner, org.springframework.validation.BindingResult, org.springframework.samples.petclinic.owner.port.OwnerPort)}.
-     */
-    @Test
-    public void testCreateOwner() throws Exception {
-        Owner owner = mock(Owner.class);
-        BindingResult result = mock(BindingResult.class);
-        OwnerPort uiPort = mock(OwnerPort.class);
-        ownerService.createOwner(owner, result, uiPort);
-    }
+	/**
+	 * Test method for
+	 * {@link org.springframework.samples.petclinic.owner.core.impl.OwnerServiceImpl#createOwner(org.springframework.samples.petclinic.owner.Owner, org.springframework.validation.BindingResult, org.springframework.samples.petclinic.owner.port.OwnerPort)}.
+	 */
+	@Test
+	public void testCreateOwner() throws Exception {
+		Owner owner = mock(Owner.class);
+		BindingResult result = mock(BindingResult.class);
+		OwnerPort uiPort = mock(OwnerPort.class);
+		ownerService.createOwner(owner, result, uiPort);
+	}
 
-    /**
-     * Test method for {@link org.springframework.samples.petclinic.owner.core.impl.OwnerServiceImpl#findOwners(org.springframework.samples.petclinic.owner.Owner, org.springframework.samples.petclinic.owner.port.OwnerPort)}.
-     */
-    @Test
-    public void testFindOwnersNoRecord() throws Exception {
-        Map<String, Object> model = new HashMap<>();
-        BindingResult bindingResult = mock(BindingResult.class);
-        OwnerUIAdptor uiPort = new OwnerUIAdptor(bindingResult, model);
+	/**
+	 * Test method for
+	 * {@link org.springframework.samples.petclinic.owner.core.impl.OwnerServiceImpl#findOwners(org.springframework.samples.petclinic.owner.Owner, org.springframework.samples.petclinic.owner.port.OwnerPort)}.
+	 */
+	@Test
+	public void testFindOwnersNoRecord() throws Exception {
+		Map<String, Object> model = new HashMap<>();
+		BindingResult bindingResult = mock(BindingResult.class);
+		OwnerUIAdptor uiPort = new OwnerUIAdptor(bindingResult, model);
 
-        given(this.owners.findByLastName("")).willReturn(Lists.emptyList());
+		given(this.owners.findByLastName("")).willReturn(Lists.emptyList());
 
-        ownerService.findOwners(new Owner(), uiPort);
+		ownerService.findOwners(new Owner(), uiPort);
 
-        assertThat(uiPort.getViewName()).isEqualTo("owners/findOwners");
-      
-    }
+		assertThat(uiPort.getViewName()).isEqualTo("owners/findOwners");
 
-    /**
-     * Test method for {@link org.springframework.samples.petclinic.owner.core.impl.OwnerServiceImpl#findOwners(org.springframework.samples.petclinic.owner.Owner, org.springframework.samples.petclinic.owner.port.OwnerPort)}.
-     */
-    @Test
-    public void testFindOwnersSuccessForBlankLastName() throws Exception {
-        Owner testOwner = new Owner();
-        Map<String, Object> model = new HashMap<>();
-        OwnerUIAdptor uiPort = new OwnerUIAdptor(null, model);
+	}
 
-        given(this.owners.findByLastName("")).willReturn(Lists.newArrayList(george, testOwner));
+	/**
+	 * Test method for
+	 * {@link org.springframework.samples.petclinic.owner.core.impl.OwnerServiceImpl#findOwners(org.springframework.samples.petclinic.owner.Owner, org.springframework.samples.petclinic.owner.port.OwnerPort)}.
+	 */
+	@Test
+	public void testFindOwnersSuccessForBlankLastName() throws Exception {
+		Owner testOwner = new Owner();
+		Map<String, Object> model = new HashMap<>();
+		OwnerUIAdptor uiPort = new OwnerUIAdptor(null, model);
 
-        ownerService.findOwners(new Owner(), uiPort);
+		given(this.owners.findByLastName("")).willReturn(Lists.newArrayList(george, testOwner));
 
-        assertThat(uiPort.getViewName()).isEqualTo("owners/ownersList");
-        Map<String, Object> result = uiPort.getModel();
-        assertThat(result).isNotEmpty();
-        assertThat(result.get("selections"), is(Lists.newArrayList(george, testOwner)));
-    }
+		ownerService.findOwners(new Owner(), uiPort);
 
-    /**
-     * Test method for {@link org.springframework.samples.petclinic.owner.core.impl.OwnerServiceImpl#findOwners(org.springframework.samples.petclinic.owner.Owner, org.springframework.samples.petclinic.owner.port.OwnerPort)}.
-     */
-    @Test
-    public void testFindOwnersSuccessWithOneRecord() throws Exception {
-        Map<String, Object> model = new HashMap<>();
-        OwnerUIAdptor uiPort = new OwnerUIAdptor(null, model);
+		assertThat(uiPort.getViewName()).isEqualTo("owners/ownersList");
+		Map<String, Object> result = uiPort.getModel();
+		assertThat(result).isNotEmpty();
+		assertThat(result.get("selections"), is(Lists.newArrayList(george, testOwner)));
+	}
 
-        given(this.owners.findByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
+	/**
+	 * Test method for
+	 * {@link org.springframework.samples.petclinic.owner.core.impl.OwnerServiceImpl#findOwners(org.springframework.samples.petclinic.owner.Owner, org.springframework.samples.petclinic.owner.port.OwnerPort)}.
+	 */
+	@Test
+	public void testFindOwnersSuccessWithOneRecord() throws Exception {
+		Map<String, Object> model = new HashMap<>();
+		OwnerUIAdptor uiPort = new OwnerUIAdptor(null, model);
 
-        ownerService.findOwners(george, uiPort);
+		given(this.owners.findByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
 
-        assertThat(uiPort.getViewName()).isEqualTo("owners/ownersList");
-        Map<String, Object> result = uiPort.getModel();
-        assertThat(result).isNotEmpty();
-        assertThat(result.get("selections"), is(Lists.newArrayList(george)));
+		ownerService.findOwners(george, uiPort);
 
-    }
+		assertThat(uiPort.getViewName()).isEqualTo("owners/ownersList");
+		Map<String, Object> result = uiPort.getModel();
+		assertThat(result).isNotEmpty();
+		assertThat(result.get("selections"), is(Lists.newArrayList(george)));
+
+	}
 
 }
