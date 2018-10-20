@@ -22,7 +22,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.samples.petclinic.owner.Owner;
 import org.springframework.samples.petclinic.owner.OwnerRepository;
 import org.springframework.samples.petclinic.owner.core.OwnerService;
-import org.springframework.samples.petclinic.owner.port.OwnerPort;
 import org.springframework.samples.petclinic.owner.port.adaptor.OwnerUIAdptor;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.validation.BindingResult;
@@ -67,10 +66,28 @@ public class OwnerServiceImplTest {
 	 */
 	@Test
 	public void testCreateOwner() throws Exception {
+		BindingResult result = mock(BindingResult.class);
+		OwnerUIAdptor uiPort = new OwnerUIAdptor(result, null);
+
+		ownerService.createOwner(george, result, uiPort);
+
+		assertThat(uiPort.getViewName()).isEqualTo("redirect:/owners/" + TEST_OWNER_ID);
+	}
+
+	/**
+	 * Test method for when CreateOwner has error in binding.
+	 * {@link org.springframework.samples.petclinic.owner.core.impl.OwnerServiceImpl#createOwner(org.springframework.samples.petclinic.owner.Owner, org.springframework.validation.BindingResult, org.springframework.samples.petclinic.owner.port.OwnerPort)}.
+	 */
+	@Test
+	public void testCreateOwnerWithErrorForRedirection() throws Exception {
 		Owner owner = mock(Owner.class);
 		BindingResult result = mock(BindingResult.class);
-		OwnerPort uiPort = mock(OwnerPort.class);
+		given(result.hasErrors()).willReturn(true);
+		OwnerUIAdptor uiPort = new OwnerUIAdptor(result, null);
+
 		ownerService.createOwner(owner, result, uiPort);
+
+		assertThat(uiPort.getViewName()).isEqualTo("owners/createOrUpdateOwnerForm");
 	}
 
 	/**
